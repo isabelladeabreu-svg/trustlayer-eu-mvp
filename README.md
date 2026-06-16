@@ -108,4 +108,4 @@ Key functions:
 
 ---
 
-*TrustLayer EU · Group 1 · IE Impact Technology Course · June 2026*
+*TrustLayer EU · Group 1 · IE Risk & Fraud Course · June 2026*
