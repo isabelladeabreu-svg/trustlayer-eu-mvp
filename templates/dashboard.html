@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrustLayer EU - Oracle-first MVP</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f5f7f8;
+      color: #18212a;
+    }
+    header {
+      background: #14233b;
+      color: #fff;
+      padding: 18px 28px;
+      border-bottom: 5px solid #1b9a78;
+    }
+    header h1 {
+      margin: 0 0 4px;
+      font-size: 1.35rem;
+      letter-spacing: 0;
+    }
+    header p {
+      margin: 0;
+      color: #bfd3df;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+    main {
+      width: min(1280px, calc(100% - 32px));
+      margin: 22px auto 36px;
+    }
+    .band {
+      background: #fff;
+      border: 1px solid #dfe6ea;
+      border-radius: 8px;
+      padding: 18px;
+      margin-bottom: 18px;
+      box-shadow: 0 1px 4px rgba(20, 35, 59, 0.06);
+    }
+    .band.primary {
+      border-top: 5px solid #1b9a78;
+    }
+    .band.secondary {
+      border-top: 5px solid #6b7280;
+    }
+    .section-title {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+    h2 {
+      margin: 0;
+      font-size: 1.08rem;
+      color: #14233b;
+      letter-spacing: 0;
+    }
+    h3 {
+      margin: 0 0 10px;
+      font-size: 0.95rem;
+      color: #223145;
+      letter-spacing: 0;
+    }
+    .subcopy {
+      max-width: 760px;
+      margin: 4px 0 0;
+      color: #52606c;
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(310px, 0.65fr);
+      gap: 18px;
+      align-items: start;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .control-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: end;
+      margin-top: 12px;
+    }
+    label {
+      display: block;
+      margin: 0 0 5px;
+      color: #4b5563;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    select, input[type="text"], input[type="number"], input[type="file"], textarea {
+      width: 100%;
+      min-height: 38px;
+      border: 1px solid #cfd8de;
+      border-radius: 6px;
+      padding: 8px 10px;
+      background: #fff;
+      color: #18212a;
+      font-size: 0.9rem;
+    }
+    textarea {
+      min-height: 78px;
+      resize: vertical;
+      line-height: 1.35;
+    }
+    button {
+      border: 0;
+      border-radius: 6px;
+      padding: 10px 14px;
+      min-height: 38px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      color: #fff;
+      background: #1b9a78;
+    }
+    button:hover { filter: brightness(0.96); }
+    button.secondary { background: #40566f; }
+    button.warn { background: #b45309; }
+    button.danger { background: #b42318; }
+    button.neutral { background: #6b7280; }
+    .muted-note {
+      color: #687684;
+      font-size: 0.78rem;
+      line-height: 1.35;
+      margin-top: 8px;
+    }
+    .result-panel {
+      display: none;
+      margin-top: 16px;
+      border: 1px solid #d8e2e8;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fbfcfd;
+    }
+    .result-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      border-bottom: 1px solid #d8e2e8;
+      background: #eef5f2;
+    }
+    .result-body {
+      padding: 14px;
+    }
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .metric {
+      border: 1px solid #dce4e8;
+      border-radius: 8px;
+      padding: 10px;
+      background: #fff;
+      min-height: 74px;
+    }
+    .metric span {
+      display: block;
+      color: #657383;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+    .metric strong {
+      display: block;
+      color: #14233b;
+      font-size: 0.95rem;
+      line-height: 1.25;
+      overflow-wrap: anywhere;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+    th {
+      text-align: left;
+      padding: 8px 9px;
+      background: #14233b;
+      color: #fff;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    td {
+      padding: 8px 9px;
+      border-bottom: 1px solid #e8eef1;
+      vertical-align: top;
+    }
+    tr:hover td { background: #f3f8fa; }
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid #e1e8ec;
+      border-radius: 8px;
+      background: #fff;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      border-radius: 999px;
+      padding: 3px 9px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .badge.low, .badge.auto-pass, .badge.approved, .badge.not-required { background: #dff3e8; color: #075e3d; }
+    .badge.medium, .badge.alert, .badge.review-pending, .badge.note-added { background: #fff2c7; color: #7a4b00; }
+    .badge.high, .badge.escalate-to-human, .badge.escalated { background: #fde6c8; color: #8a3d00; }
+    .badge.critical, .badge.circuit-break, .badge.rejected { background: #ffd9d6; color: #9f1c12; }
+    .badge.system-accepted { background: #e7edf5; color: #31445b; }
+    .mono {
+      font-family: Consolas, Monaco, "Courier New", monospace;
+      font-size: 0.78rem;
+      overflow-wrap: anywhere;
+    }
+    .details-json {
+      margin-top: 12px;
+    }
+    summary {
+      cursor: pointer;
+      color: #37516b;
+      font-weight: 700;
+      font-size: 0.82rem;
+    }
+    pre {
+      margin: 10px 0 0;
+      max-height: 320px;
+      overflow: auto;
+      background: #111827;
+      color: #d7e4ef;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      line-height: 1.35;
+    }
+    .review-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      gap: 16px;
+    }
+    .review-summary {
+      min-height: 136px;
+      border: 1px solid #dfe6ea;
+      border-radius: 8px;
+      background: #fbfcfd;
+      padding: 12px;
+      font-size: 0.84rem;
+      line-height: 1.45;
+    }
+    .review-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .ledger-note {
+      display: inline-block;
+      margin-left: 8px;
+      color: #607080;
+      font-size: 0.78rem;
+      font-weight: 400;
+    }
+    @media (max-width: 900px) {
+      .layout, .review-grid, .form-grid { grid-template-columns: 1fr; }
+      .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      main { width: min(100% - 20px, 1280px); }
+    }
+    @media (max-width: 560px) {
+      header { padding: 16px 18px; }
+      .band { padding: 14px; }
+      .metric-grid { grid-template-columns: 1fr; }
+      .section-title { display: block; }
+      .ledger-note { display: block; margin: 5px 0 0; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>TrustLayer EU - Oracle-first Operational Control MVP</h1>
+    <p>Group 1: Operational Risk and Technology Risk. Primary flow: external data risk -> anomaly detection -> control decision -> human escalation -> tamper-evident verdict trail.</p>
+  </header>
+
+  <main>
+    <section class="band primary">
+      <div class="section-title">
+        <div>
+          <h2>Oracle Integrity Monitor</h2>
+          <p class="subcopy">The main MVP module monitors external market data quality, detects oracle-specific failure modes, recommends a control response, and records the verdict for audit review.</p>
+        </div>
+        <span class="badge system-accepted">Primary MVP module</span>
+      </div>
+
+      <div class="layout">
+        <div>
+          <div class="form-grid">
+            <div>
+              <label for="oracle-scenario">Scenario</label>
+              <select id="oracle-scenario">
+                {% for key, item in scenario_presets.items() %}
+                  <option value="{{ key }}">{{ item.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div>
+              <label for="scenario-description">Scenario description</label>
+              <input id="scenario-description" type="text" readonly value="All sources are active, fresh, and close to the market median.">
+            </div>
+          </div>
+          <div class="control-row">
+            <button onclick="runOracle()">Run Oracle Control Check</button>
+            <button class="secondary" onclick="refreshLedger()">Refresh Ledger</button>
+          </div>
+          <div id="oracle-result" class="result-panel"></div>
+        </div>
+
+        <aside>
+          <h3>Governance Thresholds</h3>
+          <div class="form-grid">
+            <div>
+              <label for="cfg-divergence">Divergence %</label>
+              <input id="cfg-divergence" type="number" step="0.1" min="0.1">
+            </div>
+            <div>
+              <label for="cfg-stale">Stale seconds</label>
+              <input id="cfg-stale" type="number" step="1" min="5">
+            </div>
+            <div>
+              <label for="cfg-min-sources">Minimum active sources</label>
+              <input id="cfg-min-sources" type="number" step="1" min="1">
+            </div>
+            <div>
+              <label for="cfg-circuit">Circuit-break %</label>
+              <input id="cfg-circuit" type="number" step="0.1" min="0.1">
+            </div>
+            <div>
+              <label for="cfg-diversity">Source diversity score</label>
+              <input id="cfg-diversity" type="number" step="0.05" min="0" max="1">
+            </div>
+          </div>
+          <div class="control-row">
+            <button class="secondary" onclick="saveConfig()">Save Thresholds</button>
+          </div>
+          <p id="config-note" class="muted-note">Session-level MVP policy controls. Production would use governed change management.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="section-title">
+        <div>
+          <h2>Human Review Console</h2>
+          <p class="subcopy">Flagged verdicts can be approved, rejected, escalated, or annotated by a simulated reviewer. The review is linked back to the original system verdict.</p>
+        </div>
+        <span class="badge review-pending">Human-in-the-loop</span>
+      </div>
+      <div class="review-grid">
+        <div>
+          <label for="review-verdict">Verdict awaiting review</label>
+          <select id="review-verdict" onchange="showSelectedVerdict()">
+            <option value="">No pending verdict selected</option>
+          </select>
+          <div id="review-summary" class="review-summary">Run a high-risk oracle scenario to create a review case.</div>
+        </div>
+        <div>
+          <label for="review-note">Reviewer note</label>
+          <textarea id="review-note" placeholder="Example: Compare source outage with fallback provider dashboard before release."></textarea>
+          <div class="review-actions">
+            <button onclick="submitReview('APPROVE')">Approve</button>
+            <button class="warn" onclick="submitReview('ESCALATE')">Escalate</button>
+            <button class="danger" onclick="submitReview('REJECT')">Reject</button>
+            <button class="neutral" onclick="submitReview('ADD_NOTE')">Add Note</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="band secondary">
+      <div class="section-title">
+        <div>
+          <h2>Synthetic Content Triage Module</h2>
+          <p class="subcopy">A secondary extension module showing that the layered TrustLayer pattern can also triage synthetic-content risk. It uses explainable MVP heuristics and explicitly labels simulated checks.</p>
+        </div>
+        <span class="badge system-accepted">Extension module</span>
+      </div>
+      <div class="layout">
+        <div>
+          <div class="form-grid">
+            <div>
+              <label for="content-file">Upload media file</label>
+              <input type="file" id="content-file" accept="image/*,video/*,audio/*">
+            </div>
+            <div>
+              <label for="sim-filename">Or simulate by filename</label>
+              <input type="text" id="sim-filename" placeholder="corporate_videocall_ai_generated.jpg">
+            </div>
+          </div>
+          <div class="control-row">
+            <button class="secondary" onclick="runClassifier()">Run Content Triage</button>
+          </div>
+        </div>
+        <div>
+          <p class="muted-note">This module is deliberately framed as risk triage, not production-grade deepfake detection. The dashboard shows which signals are heuristic or simulated.</p>
+        </div>
+      </div>
+      <div id="content-result" class="result-panel"></div>
+    </section>
+
+    <section class="band">
+      <div class="section-title">
+        <div>
+          <h2>MVP Verdict Ledger <span class="ledger-note">In-memory audit log; production would anchor hashes on-chain.</span></h2>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Pipeline</th>
+              <th>Scenario</th>
+              <th>Failure Mode</th>
+              <th>Risk</th>
+              <th>Control</th>
+              <th>Action</th>
+              <th>Escalated</th>
+              <th>Review</th>
+              <th>Evidence Hash</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody id="ledger-body">
+            <tr><td colspan="11" style="text-align:center;color:#7b8794;padding:18px;">No verdicts yet. Run a control check above.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const scenarios = {{ scenario_presets | tojson }};
+    let ledgerCache = [];
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, function (char) {
+        return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]);
+      });
+    }
+
+    function toClass(value) {
+      return String(value || '').toLowerCase().replaceAll('_', '-');
+    }
+
+    function badge(value) {
+      const label = String(value || 'n/a').replaceAll('_', ' ');
+      return `<span class="badge ${toClass(value)}">${escapeHtml(label)}</span>`;
+    }
+
+    function shortHash(hash) {
+      if (!hash || hash === 'n/a') return 'n/a';
+      return `${hash.slice(0, 14)}...${hash.slice(-8)}`;
+    }
+
+    function money(value) {
+      if (value === null || value === undefined) return 'n/a';
+      return `$${Number(value).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+    }
+
+    function updateScenarioDescription() {
+      const key = document.getElementById('oracle-scenario').value;
+      document.getElementById('scenario-description').value = scenarios[key].description;
+    }
+
+    async function loadConfig() {
+      const response = await fetch('/api/config');
+      const data = await response.json();
+      const cfg = data.config;
+      document.getElementById('cfg-divergence').value = cfg.divergence_threshold_pct;
+      document.getElementById('cfg-stale').value = cfg.stale_threshold_seconds;
+      document.getElementById('cfg-min-sources').value = cfg.minimum_active_sources;
+      document.getElementById('cfg-circuit').value = cfg.circuit_break_threshold_pct;
+      document.getElementById('cfg-diversity').value = cfg.minimum_source_diversity_score;
+    }
+
+    async function saveConfig() {
+      const body = {
+        divergence_threshold_pct: Number(document.getElementById('cfg-divergence').value),
+        stale_threshold_seconds: Number(document.getElementById('cfg-stale').value),
+        minimum_active_sources: Number(document.getElementById('cfg-min-sources').value),
+        circuit_break_threshold_pct: Number(document.getElementById('cfg-circuit').value),
+        minimum_source_diversity_score: Number(document.getElementById('cfg-diversity').value),
+      };
+      const response = await fetch('/api/config', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(body),
+      });
+      const data = await response.json();
+      document.getElementById('config-note').textContent = response.ok
+        ? 'Thresholds saved for this Flask session.'
+        : data.error;
+    }
+
+    async function runOracle() {
+      const scenario = document.getElementById('oracle-scenario').value;
+      const box = document.getElementById('oracle-result');
+      box.style.display = 'block';
+      box.innerHTML = '<div class="result-head"><strong>Running oracle control check...</strong></div>';
+      const response = await fetch('/api/oracle', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({scenario}),
+      });
+      const data = await response.json();
+      renderOracleResult(data);
+      await refreshLedger(data.verdict_id);
+    }
+
+    function renderOracleResult(data) {
+      const feeds = data.feeds.map(feed => `
+        <tr>
+          <td>${escapeHtml(feed.source)}</td>
+          <td>${escapeHtml(feed.source_type)}</td>
+          <td>${feed.active ? 'yes' : 'no'}</td>
+          <td>${escapeHtml(feed.status)}</td>
+          <td>${money(feed.price)}</td>
+          <td>${feed.deviation_pct ?? 'n/a'}%</td>
+          <td>${feed.age_seconds ?? 'n/a'}</td>
+        </tr>
+      `).join('');
+
+      document.getElementById('oracle-result').innerHTML = `
+        <div class="result-head">
+          <strong>${escapeHtml(data.scenario_name)}</strong>
+          <div>${badge(data.risk_level)} ${badge(data.action)}</div>
+        </div>
+        <div class="result-body">
+          <div class="metric-grid">
+            <div class="metric"><span>Failure mode</span><strong>${escapeHtml(data.failure_mode)}</strong></div>
+            <div class="metric"><span>Recommended control</span><strong>${escapeHtml(data.recommended_control)}</strong></div>
+            <div class="metric"><span>Healthy sources</span><strong>${data.healthy_sources} of ${data.feeds.length}</strong></div>
+            <div class="metric"><span>Source diversity</span><strong>${data.source_diversity_score}</strong></div>
+            <div class="metric"><span>Median price</span><strong>${money(data.analysis.median_price)}</strong></div>
+            <div class="metric"><span>Max deviation</span><strong>${data.analysis.max_deviation_pct}%</strong></div>
+            <div class="metric"><span>Redundancy</span><strong>${escapeHtml(data.redundancy_status)}</strong></div>
+            <div class="metric"><span>Evidence hash</span><strong class="mono">${shortHash(data.evidence_hash)}</strong></div>
+          </div>
+          <p class="muted-note"><strong>Business impact:</strong> ${escapeHtml(data.business_impact_hint)}</p>
+          <p class="muted-note"><strong>Triggered control:</strong> ${escapeHtml(data.message)}</p>
+          <div class="table-wrap" style="margin-top:12px;">
+            <table>
+              <thead>
+                <tr><th>Feed</th><th>Type</th><th>Active</th><th>Status</th><th>Price</th><th>Deviation</th><th>Age sec.</th></tr>
+              </thead>
+              <tbody>${feeds}</tbody>
+            </table>
+          </div>
+          <details class="details-json">
+            <summary>Raw oracle verdict</summary>
+            <pre>${escapeHtml(JSON.stringify(data, null, 2))}</pre>
+          </details>
+        </div>
+      `;
+    }
+
+    async function runClassifier() {
+      const file = document.getElementById('content-file').files[0];
+      const simName = document.getElementById('sim-filename').value.trim();
+      const box = document.getElementById('content-result');
+      box.style.display = 'block';
+      box.innerHTML = '<div class="result-head"><strong>Running content triage...</strong></div>';
+
+      let response;
+      if (file) {
+        const form = new FormData();
+        form.append('file', file);
+        response = await fetch('/api/classify', {method: 'POST', body: form});
+      } else {
+        response = await fetch('/api/classify', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({simulate_filename: simName || 'corporate_videocall_ai_generated.jpg'}),
+        });
+      }
+
+      const data = await response.json();
+      renderContentResult(data);
+      await refreshLedger(data.verdict_id);
+    }
+
+    function renderContentResult(data) {
+      const signals = data.signals_checked.map(signal => `
+        <tr>
+          <td>${escapeHtml(signal.signal)}</td>
+          <td>${escapeHtml(signal.method)}</td>
+          <td>${signal.simulated ? 'yes' : 'no'}</td>
+          <td>${escapeHtml(signal.inference)}</td>
+        </tr>
+      `).join('');
+
+      document.getElementById('content-result').innerHTML = `
+        <div class="result-head">
+          <strong>${escapeHtml(data.label)}</strong>
+          <div>${badge(data.risk_level)} ${badge(data.action)}</div>
+        </div>
+        <div class="result-body">
+          <div class="metric-grid">
+            <div class="metric"><span>Input mode</span><strong>${escapeHtml(data.input_mode)}</strong></div>
+            <div class="metric"><span>Failure mode</span><strong>${escapeHtml(data.failure_mode)}</strong></div>
+            <div class="metric"><span>Synthetic probability</span><strong>${data.synthetic_probability}%</strong></div>
+            <div class="metric"><span>Recommended control</span><strong>${escapeHtml(data.recommended_control)}</strong></div>
+          </div>
+          <p class="muted-note"><strong>What was inferred:</strong> ${escapeHtml(data.message)}</p>
+          <div class="table-wrap" style="margin-top:12px;">
+            <table>
+              <thead><tr><th>Signal</th><th>Method</th><th>Simulated</th><th>Inference</th></tr></thead>
+              <tbody>${signals}</tbody>
+            </table>
+          </div>
+          <details class="details-json">
+            <summary>Raw content triage verdict</summary>
+            <pre>${escapeHtml(JSON.stringify(data, null, 2))}</pre>
+          </details>
+        </div>
+      `;
+    }
+
+    async function refreshLedger(preselectId) {
+      const response = await fetch('/api/verdicts');
+      const data = await response.json();
+      ledgerCache = data.verdicts || [];
+      renderLedger();
+      renderReviewOptions(preselectId);
+    }
+
+    function renderLedger() {
+      const tbody = document.getElementById('ledger-body');
+      if (!ledgerCache.length) {
+        tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;color:#7b8794;padding:18px;">No verdicts yet. Run a control check above.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = ledgerCache.slice().reverse().map(verdict => `
+        <tr>
+          <td>${verdict.id}</td>
+          <td>${escapeHtml(verdict.pipeline_label)}</td>
+          <td>${escapeHtml(verdict.scenario_name)}</td>
+          <td>${escapeHtml(verdict.failure_mode)}</td>
+          <td>${badge(verdict.risk_level)}</td>
+          <td>${escapeHtml(verdict.recommended_control)}</td>
+          <td>${badge(verdict.action)}</td>
+          <td>${verdict.escalated ? 'yes' : 'no'}</td>
+          <td>${badge(verdict.human_review_status)}</td>
+          <td class="mono">${shortHash(verdict.evidence_hash)}</td>
+          <td>${escapeHtml(verdict.timestamp.slice(11, 19))} UTC</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderReviewOptions(preselectId) {
+      const select = document.getElementById('review-verdict');
+      const pending = ledgerCache.filter(verdict => verdict.human_review_status === 'REVIEW_PENDING');
+      if (!pending.length) {
+        select.innerHTML = '<option value="">No pending verdicts</option>';
+        document.getElementById('review-summary').textContent = 'No cases are currently waiting for human review.';
+        return;
+      }
+      select.innerHTML = pending.map(verdict => `
+        <option value="${verdict.id}">#${verdict.id} - ${escapeHtml(verdict.pipeline_label)} - ${escapeHtml(verdict.risk_level)}</option>
+      `).join('');
+      if (preselectId && pending.some(verdict => verdict.id === preselectId)) {
+        select.value = String(preselectId);
+      }
+      showSelectedVerdict();
+    }
+
+    function showSelectedVerdict() {
+      const id = Number(document.getElementById('review-verdict').value);
+      const verdict = ledgerCache.find(item => item.id === id);
+      const box = document.getElementById('review-summary');
+      if (!verdict) {
+        box.textContent = 'No pending verdict selected.';
+        return;
+      }
+      box.innerHTML = `
+        <strong>Original system verdict:</strong> ${badge(verdict.action)} ${badge(verdict.risk_level)}<br>
+        <strong>Scenario:</strong> ${escapeHtml(verdict.scenario_name)}<br>
+        <strong>Failure mode:</strong> ${escapeHtml(verdict.failure_mode)}<br>
+        <strong>Recommended control:</strong> ${escapeHtml(verdict.recommended_control)}<br>
+        <strong>Final disposition:</strong> ${escapeHtml(verdict.final_reviewed_status)}<br>
+        <strong>Evidence:</strong> <span class="mono">${shortHash(verdict.evidence_hash)}</span>
+      `;
+    }
+
+    async function submitReview(decision) {
+      const verdictId = Number(document.getElementById('review-verdict').value);
+      if (!verdictId) {
+        document.getElementById('review-summary').textContent = 'Select a pending verdict before submitting a review.';
+        return;
+      }
+      const note = document.getElementById('review-note').value.trim();
+      const response = await fetch('/api/review', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          verdict_id: verdictId,
+          decision,
+          note,
+          reviewer: 'MVP Reviewer',
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        document.getElementById('review-summary').textContent = data.error;
+        return;
+      }
+      document.getElementById('review-note').value = '';
+      await refreshLedger();
+      document.getElementById('review-summary').innerHTML = `
+        <strong>Review recorded:</strong> ${badge(data.review_event.decision)}<br>
+        <strong>Linked verdict:</strong> #${data.review_event.verdict_id}<br>
+        <strong>Final disposition:</strong> ${escapeHtml(data.verdict.final_reviewed_status)}
+      `;
+    }
+
+    document.getElementById('oracle-scenario').addEventListener('change', updateScenarioDescription);
+    loadConfig();
+    refreshLedger();
+  </script>
+</body>
+</html>
